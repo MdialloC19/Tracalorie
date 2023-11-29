@@ -6,14 +6,14 @@ class CalorieTracker{
         // console.log(Storage.getTotalCalories(100))
         this._meals=Storage.getMeals();
         this._workouts=Storage.getWorkouts();
-
         this._displayCaloriesLimit();
         this._displayCaloriesTotal();
         this._displayCaloriesConsumed();
         this._displayCaloriesBurned();
         this._displayCaloriesRemaining();
         this._displayCaloriesProgress();
-        
+
+        document.getElementById('limit').value=this._calorieLimit; 
     }
 
     // Public Methods/API//
@@ -37,32 +37,33 @@ class CalorieTracker{
         this._render();
 
     }
-
     removeMeal(id){
         const index=this._meals.findIndex((meal)=>meal.id===id);
         if(index!==-1){
             const meal = this._meals[index];
             this._totalCalories-=meal.calories;
             this._meals.splice(index,1);
+            Storage.removeMeal(id);
             this._render();
         }
     }
-
     removeWorkout(id) {
         const index = this._workouts.findIndex((workout) => workout.id === id);
         if (index !== -1) {
             const workout = this._workouts[index];
             this._workouts.splice(index, 1);
+            Storage.removeWorkout(id);
             this._totalCalories += workout.calories;
             this._render();
         }
-    
     }
 
     reset() {
         this._totalCalories = 0;
         this._meals = [];
         this._workouts = [];
+        Storage.clearAll();
+        this._displayCaloriesLimit();
         this._render();
     }
     setLimit(limit){
@@ -263,6 +264,32 @@ class Storage{
         const workouts= Storage.getWorkouts();
         workouts.push(workout);
         localStorage.setItem('workouts', JSON.stringify(workouts));
+    }
+
+   
+    static removeMeal(id){
+        const meals=Storage.getMeals();
+
+        meals.forEach((meal,index)=>{
+            if(meal.id===id){
+                meals.splice(index,1);
+            }
+        });
+       localStorage.setItem('meals', JSON.stringify(meals));
+    }
+
+    static removeWorkout(id){
+        const workouts=Storage.getWorkouts();
+        workouts.forEach((meal,index)=>{
+            if(meal.id===id){
+                workouts.splice(index,1);
+            }
+        });
+       localStorage.setItem('workouts', JSON.stringify(workouts));
+    }
+
+    static clearAll(){
+        localStorage.clear();
     }
 }
 
