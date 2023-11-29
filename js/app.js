@@ -53,7 +53,21 @@ class CalorieTracker{
             this._totalCalories += workout.calories;
             this._render();
         }
-  }
+    
+    }
+
+    reset() {
+        this._totalCalories = 0;
+        this._meals = [];
+        this._workouts = [];
+        this._render();
+    }
+
+    setLimit(limit){
+        this._calorieLimit=limit;
+        this._displayCaloriesLimit();
+        this._render();
+    }
 
     // Private Methods
 
@@ -88,7 +102,6 @@ class CalorieTracker{
 
     _displayCaloriesLimit(){
         const calorieLimitEl=document.querySelector('#calories-limit');
-
         calorieLimitEl.innerHTML=this._calorieLimit;
 
         
@@ -127,8 +140,12 @@ class CalorieTracker{
             progressEl.classList.add('bg-success');
 
         }
+    
+   
 
     }
+
+    
 
     _displayCaloriesProgress(){
         const progressEl=document.querySelector('#calorie-progress');
@@ -191,27 +208,21 @@ class App{
         document
             .getElementById('workout-items')
             .addEventListener('click', this._removeItem.bind(this,'workout'));
+        
+        document
+            .getElementById('filter-meals')
+            .addEventListener('keyup',this._filterItems.bind(this, 'meal'));
+        document
+            .getElementById('filter-workouts')
+            .addEventListener('keyup',this._filterItems.bind(this,'workout'));
+        document
+            .getElementById('reset')
+            .addEventListener('click', this._reset.bind(this));
+        
+        document
+            .getElementById('limit-form')
+            .addEventListener('submit', this._setLimit.bind(this));
     }
-
-    _removeItem(type,e){
-
-        if( e.target.classList.contains('delete')|| 
-            e.target.classList.contains('fa-xmark')){
-                if(confirm('Are you sure ?')){
-                    const id= e.target.closest('.card').getAttribute('data-id');
-                    type==='meal'
-                        ?this._tracker.removeMeal(id)
-                        :this._tracker.removeWorkout(id);
-
-                    e.target.closest('.card').remove();
-                }
-
-        }
-
-
-
-    }
-
 
     _newItem(type,e){
         e.preventDefault();
@@ -239,8 +250,61 @@ class App{
         const bscollapse=new bootstrap.Collapse(collapse, {
             toggle:true
         });
+    }
+
+     _removeItem(type,e){
+
+        if( e.target.classList.contains('delete')|| 
+            e.target.classList.contains('fa-xmark')){
+                if(confirm('Are you sure ?')){
+                    const id= e.target.closest('.card').getAttribute('data-id');
+                    type==='meal'
+                        ?this._tracker.removeMeal(id)
+                        :this._tracker.removeWorkout(id);
+                    e.target.closest('.card').remove();
+                }
+        }
 
     }
+
+    _filterItems(type,e){
+        const text=e.target.value.toLowerCase();
+        document.querySelectorAll(`#${type}-items .card`).forEach(item=>{
+            const name=item.firstElementChild.firstElementChild.textContent;
+            if(name.toLowerCase().indexOf(text)!==-1){
+                item.style.display='block';
+                
+            }else{
+                item.style.display='none';
+            }
+        });
+    }
+
+    _reset(){
+        this._tracker.reset();
+        document.getElementById('meal-items').innerHTML='';
+        document.getElementById('workout-items').innerHTML='';
+        document.getElementById('filter-meals').innerHTML='';
+        document.getElementById('filter-workouts').innerHTML='';
+        
+    }
+
+    _setLimit(e){
+        e.preventDefault();
+        const limit=document.getElementById('limit');
+         if (limit.value === '') {
+            alert('Please add a limit');
+            return;
+        }
+        this._tracker.setLimit(+limit.value);
+        limit.value='';
+
+        const modalEl = document.getElementById('limit-modal');
+        const modal = bootstrap.Modal.getInstance(modalEl);
+        modal.hide();
+        
+    }
+
 
 }
 
