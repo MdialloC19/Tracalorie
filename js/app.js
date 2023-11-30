@@ -12,6 +12,7 @@ class CalorieTracker{
         this._displayCaloriesBurned();
         this._displayCaloriesRemaining();
         this._displayCaloriesProgress();
+       
 
         document.getElementById('limit').value=this._calorieLimit; 
     }
@@ -85,6 +86,8 @@ class CalorieTracker{
             .forEach(meal=> this._displayNewItems('meal',meal));
         this._workouts
             .forEach(workout=> this._displayNewItems('workout',workout));
+        this._displayChartMeal();
+        this._displayChartWorkout();
     }
 
     // Private Methods
@@ -175,12 +178,77 @@ class CalorieTracker{
 
     }
 
+    _displayChartMeal(){
+        const ctx = document.getElementById('myChart-1');
+        const meals=Storage.getMeals();
+         if (window.myChartMeal) {
+            window.myChartMeal.destroy();
+        }
+
+        window.myChartMeal=new Chart(ctx, {
+            type: 'bar',
+            data: {
+            labels: meals.map((meal)=>meal.name),
+            datasets: [{
+                label: 'calories by meal',
+                data: meals.map((meal)=>meal.calories),
+                borderColor: '#36A2EB',
+                backgroundColor: '#9BD0F5',
+                borderWidth: 1
+            }]
+            },
+                options: {
+                scales: {
+                    y: {
+                    beginAtZero: true
+                    }
+                }
+            }
+        });
+    }
+
+    _displayChartWorkout(){
+        const ctx1 = document.getElementById('myChart-2');
+        const workouts = Storage.getWorkouts();
+        
+        // Vérifie si le graphique existe déjà et le détruit s'il est présent
+        if (window.myChartWorkout) {
+            window.myChartWorkout.destroy();
+        }
+
+        window.myChartWorkout= new Chart(ctx1, {
+            type: 'bar',
+            data: {
+                labels: workouts.map((workout) => workout.name),
+                datasets: [{
+                    label: 'Calories by workout',
+                    data: workouts.map((workout) => workout.calories),
+                    borderColor: '#FF6384',
+                    backgroundColor: '#FFB1C1',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+    }
+
+
+
     _render(){
         this._displayCaloriesTotal();
         this._displayCaloriesConsumed();
         this._displayCaloriesBurned();
         this. _displayCaloriesRemaining();
         this._displayCaloriesProgress();
+        this._displayChartMeal();
+        this._displayChartWorkout();
+        
     }
     
 }
@@ -413,6 +481,8 @@ class App{
         modal.hide();
         
     }
+
+    
 }
 
 const app=new App();

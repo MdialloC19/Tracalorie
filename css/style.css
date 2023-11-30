@@ -7,3 +7,9 @@
 .hidden {
   display: none;
 }/*# sourceMappingURL=style.css.map */
+
+
+#samples{
+  /* display: none; */
+ width: 500px;
+}
