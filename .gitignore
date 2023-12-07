@@ -1,2 +1,4 @@
 php_errors.log
 .vscode
+node_modules
+dist
