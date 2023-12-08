@@ -31,7 +31,7 @@ This repository contains the source code for a Calorie Tracker application built
 
 To start using this combined repository:
 
-1. Clone the repository: `git clone https://github.com/your-username/calorie-tracker-webpack.git`
+1. Clone the repository: `git clone git@github.com:MdialloC19/Tracalorie.git`
 2. Install dependencies: `npm install`
 3. Once the dependencies are installed, you can use the following npm scripts:
     - `npm run build`: Builds the project using Webpack for production.

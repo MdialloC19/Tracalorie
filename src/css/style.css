@@ -10,6 +10,14 @@
 
 
 #samples{
-  /* display: none; */
- width: 500px;
+  display: flex;
+  flex-direction: column;
+  justify-content:center;
+  align-items: center;
+}
+#samples .sample-items{
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+  gap: 4rem;
 }
